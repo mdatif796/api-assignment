@@ -1,13 +1,14 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 
 const app = express();
 const PORT = 8000;
 
 const db = require('./config/databaseConnection');
 
-app.get('/', (req, res) => {
-    return res.send('<h1>RUNNING</h1>');
-});
+app.use(bodyParser.urlencoded({extended: true}));
+
+app.use('/', require('./routes'));
 
 
 app.listen(PORT, (err) => {
