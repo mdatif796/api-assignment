@@ -4,6 +4,9 @@ const router = express.Router();
 const userController = require('../../controllers/api/userController');
 const setAuthenticationMiddleware = require('../../config/setAuthenticationMiddleware');
 
+
+router.get('/home', userController.home);
+
 router.post('/authenticate', userController.authenticateUser);
 router.post('/create-user', userController.createUser);
 router.post('/follow/:id', setAuthenticationMiddleware.checkAuthentication, userController.followUser);
