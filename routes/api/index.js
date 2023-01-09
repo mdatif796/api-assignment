@@ -17,5 +17,8 @@ router.get('/user', setAuthenticationMiddleware.checkAuthentication, userControl
 
 router.post('/posts', setAuthenticationMiddleware.checkAuthentication, postController.createPost);
 router.delete('/posts/:id', setAuthenticationMiddleware.checkAuthentication, postController.deletePost);
+router.post('/like/:id', setAuthenticationMiddleware.checkAuthentication, postController.likePost);
+router.post('/unlike/:id', setAuthenticationMiddleware.checkAuthentication, postController.unLikePost);
+
 
 module.exports = router;
