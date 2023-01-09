@@ -1,4 +1,5 @@
 const Post = require('../../models/post');
+const Like = require('../../models/like');
 
 
 
@@ -11,18 +12,40 @@ module.exports.likePost = async (req, res) => {
                 message: 'post not exist'
             });
         }
-        let postLikesUserId = post.likes;
-        for(let userId of postLikesUserId){
-            if(userId === req.user._id){
-                return res.status(201).json({
-                    message: 'Post liked already'
+
+        
+        post = await Post.findById(req.params.id).populate('user', '-password ').populate({
+            path: 'comments',
+            populate: {
+                path: 'user',
+                select: '-password'
+            }
+        }).populate({
+            path: 'likes',
+            populate: {
+                path: 'user',
+                select: '-password'
+            }
+        });
+        // console.log('post: ', post);
+        let postLikedUser = post.likes;
+        console.log('postLikedUser: ', postLikedUser);
+        for(let user of postLikedUser){
+            if(user.user.email === req.user.email){
+                return res.status(200).json({
+                    message: 'Post liked already!!'
                 });
             }
         }
-        post.likes.push(req.user._id);
+
+        let like = await Like.create({
+            user: req.user._id
+        });
+
+        post.likes.push(like._id);
         await post.save();
         return res.status(200).json({
-            message: 'Post liked!!'
+            message: 'Post liked!!',
         });
 
     } catch (error) {
@@ -42,11 +65,29 @@ module.exports.unLikePost = async (req, res) => {
                 message: 'post not exist'
             });
         }
-        let postLikesUserId = post.likes;
-        postLikesUserId = postLikesUserId.filter((userId) => {
-            return userId !== req.user._id;
+        post = await Post.findById(req.params.id).populate('user', '-password ').populate({
+            path: 'comments',
+            populate: {
+                path: 'user',
+                select: '-password'
+            }
+        }).populate({
+            path: 'likes',
+            populate: {
+                path: 'user',
+                select: '-password'
+            }
         });
-        post.likes = postLikesUserId;
+
+        let deleteLike = await Like.findOneAndDelete({
+            user: req.user._id
+        });
+        if(!deleteLike){
+            return res.status(200).json({
+                message: 'Like not exist!!'
+            });
+        }
+        await post.likes.pull(deleteLike._id);
         await post.save();
         return res.status(200).json({
             message: 'Post unliked!!'

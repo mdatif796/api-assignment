@@ -19,6 +19,8 @@ router.get('/user', setAuthenticationMiddleware.checkAuthentication, userControl
 
 router.post('/posts', setAuthenticationMiddleware.checkAuthentication, postController.createPost);
 router.delete('/posts/:id', setAuthenticationMiddleware.checkAuthentication, postController.deletePost);
+router.get('/posts/:id', setAuthenticationMiddleware.checkAuthentication, postController.getPost);
+router.get('/all_posts', setAuthenticationMiddleware.checkAuthentication, postController.getAllPost);
 
 
 router.post('/like/:id', setAuthenticationMiddleware.checkAuthentication, likeController.likePost);
