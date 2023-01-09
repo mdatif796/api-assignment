@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const userController = require('../../controllers/api/userController');
 const postController = require('../../controllers/api/postController');
+const likeController = require('../../controllers/api/likeController');
+const commentController = require('../../controllers/api/commentController');
 const setAuthenticationMiddleware = require('../../config/setAuthenticationMiddleware');
 
 
@@ -17,8 +19,12 @@ router.get('/user', setAuthenticationMiddleware.checkAuthentication, userControl
 
 router.post('/posts', setAuthenticationMiddleware.checkAuthentication, postController.createPost);
 router.delete('/posts/:id', setAuthenticationMiddleware.checkAuthentication, postController.deletePost);
-router.post('/like/:id', setAuthenticationMiddleware.checkAuthentication, postController.likePost);
-router.post('/unlike/:id', setAuthenticationMiddleware.checkAuthentication, postController.unLikePost);
+
+
+router.post('/like/:id', setAuthenticationMiddleware.checkAuthentication, likeController.likePost);
+router.post('/unlike/:id', setAuthenticationMiddleware.checkAuthentication, likeController.unLikePost);
+
+router.post('/comment/:id', setAuthenticationMiddleware.checkAuthentication, commentController.addComment);
 
 
 module.exports = router;
