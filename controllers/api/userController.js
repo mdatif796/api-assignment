@@ -13,17 +13,23 @@ module.exports.home = (req, res) => {
 
 
 module.exports.createUser = async (req, res) => {
-    let user = await User.findOne({email: req.body.email});
-    console.log('user: ', user);
-    if(!user){
-        user = await User.create(req.body);
+    try {
+        let user = await User.findOne({email: req.body.email});
         console.log('user: ', user);
-    }
-    return res.status(200).json({
-        user: {
-            user: user
+        if(!user){
+            user = await User.create(req.body);
+            console.log('user: ', user);
         }
-    });
+        return res.status(200).json({
+            user: {
+                user: user
+            }
+        });    
+    } catch (error) {
+        return res.status(500).json({
+            message: 'Internal server error'
+        });       
+    }
 }
 
 module.exports.authenticateUser = async (req, res) => {
